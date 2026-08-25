@@ -12,11 +12,11 @@ const useGetProductos = () => {
         queryKey: ["productos"],
         staleTime: 1000 * 60 * 60 * 24
     })
-    const result = data ? Object.groupBy(data, ({category}) => String(category)) || "no categories in the data" : []
-    console.log(JSON.stringify(result)) // un objeto con listas de objetos, con tantas keys como categorias, hay q manipular los datos diferente
+    const categorizedData = data ? Object.values(Object.groupBy(data, ({category}) => String(category))) : data
+    console.log(JSON.stringify(categorizedData)) // una lista con listas de objetos, con tantas keys como categorias, hay q manipular los datos diferente
     console.log(data) // una lista de objetos
     
-    return {data, isLoading, isError, isFetching, refetch}
+    return {data, categorizedData, isLoading, isError, isFetching, refetch}
 }
 
 export default useGetProductos

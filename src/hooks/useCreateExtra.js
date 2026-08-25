@@ -4,6 +4,8 @@ import {useMutation, useQueryClient} from "@tanstack/react-query"
 const createExtra = async (formData) => {
   // formData es un objeto JSON aqui
   const data = await post('/extras', formData);
+  console.log("useCreateExtra: ", data)
+  console.log(JSON.stringify(formData))
   return data;
 };
 
@@ -13,7 +15,7 @@ const useCreateExtra = () => {
     const createExtraMutation = useMutation({
         mutationFn:createExtra,
         mutationKey: ["extra-create"],
-        
+        /*
         onMutate: async (formData) => {
             await queryClient.cancelQueries([{queryKey: ["extras"]}]);
 
@@ -34,7 +36,7 @@ const useCreateExtra = () => {
         onError: (error, formData, context) => {
             queryClient.setQueryData(["extras"], context.previousData)
         },
-
+        */
         onSettled: () => {
             queryClient.invalidateQueries({queryKey: ["extras"] })
         }

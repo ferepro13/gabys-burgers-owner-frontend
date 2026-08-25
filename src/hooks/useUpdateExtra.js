@@ -3,7 +3,10 @@ import {useMutation, useQueryClient} from "@tanstack/react-query"
 
 const updateExtra = async ({uuid, formData}) => {
   // formData es un objeto JSON
+  console.log(formData)
+  console.log(uuid)
   const data = await put(`/extras/${uuid}`, formData);
+  console.log("useUpdateExtra: ", uuid, data)
   return data;
 };
 
@@ -13,7 +16,7 @@ const useUpdateExtra = () => {
     const updateExtraMutation = useMutation({
         mutationFn:updateExtra,
         mutationKey: ["extra-update"],
-        
+        /*
         onMutate: async (formData, uuid) => {
             await queryClient.cancelQueries([{queryKey: ["extras"]}]);
 
@@ -35,7 +38,7 @@ const useUpdateExtra = () => {
         onError: (error, formData, context) => {
             queryClient.setQueryData(["extras"], context.previousData)
         },
-
+        */
         onSettled: () => {
             queryClient.invalidateQueries({queryKey: ["extras"] })
         }

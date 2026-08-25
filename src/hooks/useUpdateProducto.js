@@ -13,14 +13,14 @@ const useUpdateProducto = () => {
     const updateProductoMutation = useMutation({
         mutationFn:updateProducto,
         mutationKey: ["producto-update"],
-        
+        /*
         onMutate: async (formData, uuid) => {
             await queryClient.cancelQueries([{queryKey: ["productos"]}]);
 
             const previousData = queryClient.getQueryData(["productos"]);
 
             //const { name, description, price, stock } = formData;
-            const { name, description, price, stock, imageUrl } = formData.entries(); //revisar
+            const { name, description, price, stock, imageUrl } = formData?.entries() || formData; // in case is a json
             //
 
             const updateData = {};
@@ -40,7 +40,7 @@ const useUpdateProducto = () => {
         onError: (error, formData, context) => {
             queryClient.setQueryData(["productos"], context.previousData)
         },
-
+        */
         onSettled: () => {
             queryClient.invalidateQueries({queryKey: ["productos"] })
         }

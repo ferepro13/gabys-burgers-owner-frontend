@@ -19,7 +19,7 @@ export default function ExtraList() {
   
   if (!data.length) return <EmptyState title="No hay extras" description="Crea extras como queso, salsa o ingredientes adicionales para que puedan gestionarse desde el panel." />
 
-  const toggleAvailability = extra => setEditing({ ...extra })
+  const toggleAvailability = extra => {setEditing({ ...extra }); console.log(extra)}
 
   return (
     <div className="relative">
@@ -28,8 +28,12 @@ export default function ExtraList() {
         {data.map(extra => (
           <article key={extra.uuid} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4">
             <div className="flex items-start justify-between gap-3">
-              <div><h3 className="font-display text-lg">{extra.name}</h3><p className="mt-1 text-gold">{money(extra.price)}</p></div>
-              <span className={`rounded-full px-2.5 py-1 text-xs ${extra.isAvailable ? 'bg-emerald-400/10 text-emerald-300' : 'bg-red-400/10 text-red-300'}`}>{extra.isAvailable ? 'Disponible' : 'No disponible'}</span>
+              <div>
+                <h3 className="font-display text-lg">{extra.name}</h3>
+                <p className="mt-1 text-gold">{money(extra.price)}</p>
+              </div>
+              <span className={`rounded-full px-2.5 py-1 text-xs ${extra.isAvailable ? 'bg-emerald-400/10 text-emerald-300' : 'bg-red-400/10 text-red-300'}`}>
+              {extra.isAvailable ? 'Disponible' : 'No disponible'}</span>
             </div>
             <div className="mt-4 flex gap-2">
               <button onClick={() => toggleAvailability(extra)} className="flex-1 rounded-lg border border-white/10 px-3 py-2 text-sm text-cream/70 hover:border-gold/40 hover:text-gold">Editar</button>

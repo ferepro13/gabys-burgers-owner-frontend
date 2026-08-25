@@ -13,14 +13,14 @@ const useCreateProduct = () => {
     const createProductoMutation = useMutation({
         mutationFn:createProduct,
         mutationKey: ["producto-create"],
-        
+        /*
         onMutate: async (formData) => {
             await queryClient.cancelQueries([{queryKey: ["productos"]}]);
 
             const previousData = queryClient.getQueryData(["productos"]);
             
             //const { name, description, price, stock } = formData;
-            const { name, description, price, stock } = formData.entries();
+            const { name, description, price, stock } = formData?.entries() || formData; // in case is a json
 
             //const uuid = previousData?.length + 1;
             const tempId = `temp-${crypto.randomUUID()}`
@@ -35,7 +35,7 @@ const useCreateProduct = () => {
         onError: (error, formData, context) => {
             queryClient.setQueryData(["productos"], context.previousData)
         },
-
+        */
         onSettled: () => {
             queryClient.invalidateQueries({queryKey: ["productos"] })
         }
