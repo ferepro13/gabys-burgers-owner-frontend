@@ -1,8 +1,9 @@
 const money = value => new Intl.NumberFormat(import.meta.env.VITE_LOCALE || 'es-US', { style: 'currency', currency: import.meta.env.VITE_CURRENCY || 'USD' }).format(Number(value || 0))
 
-export default function PedidoItem({ pedido, onDetails= f => f, onMarkDone, updating = false }) {
+export default function PedidoItem({ pedido, onDetails= f => f, onMarkDone= f => f, updating = false }) {
   const parsedOrder = typeof pedido.orderDetails === 'string' ? (() => { try { return JSON.parse(pedido.orderDetails) } catch { return null } })() : pedido.orderDetails
-  const items = [...(parsedOrder?.productos || []), ...(parsedOrder?.extras || [])]
+  const items = parsedOrder?.productos || []
+  //const items = [...(parsedOrder?.productos || []), ...(parsedOrder?.extras || [])]
   const pending = pedido.orderState === 'pendiente'
   const date = pedido.toDate ? new Date(pedido.toDate) : null
 

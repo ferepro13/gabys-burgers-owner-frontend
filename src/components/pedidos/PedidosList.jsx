@@ -5,12 +5,16 @@ import useGetPedidos from '../../hooks/useGetPedidos'
 import PedidoItem from './PedidoItem'
 import LoadingState from '../ui/LoadingState'
 import EmptyState from '../ui/EmptyState'
+import useGetExtras from "../../hooks/useGetExtras"
 
 const money = value => new Intl.NumberFormat(import.meta.env.VITE_LOCALE || 'es-US', { style: 'currency', currency: import.meta.env.VITE_CURRENCY || 'USD' }).format(Number(value || 0))
 
 function Details({ pedido, onClose, onMarkDone, updating }) {
+  const {data: extrasData} = useGetExtras()
+
   const parsedOrder = typeof pedido.orderDetails === 'string' ? (() => { try { return JSON.parse(pedido.orderDetails) } catch { return null } })() : pedido.orderDetails
-  const items = [...(parsedOrder?.productos || []), ...(parsedOrder?.extras || [])]
+  //const items = [...(parsedOrder?.productos || []), ...(parsedOrder?.extras || [])]
+  const items = parsedOrder?.productos || []
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-6">
       <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-3xl border border-white/10 bg-[#151515] p-6 sm:rounded-3xl">
@@ -49,8 +53,19 @@ function Details({ pedido, onClose, onMarkDone, updating }) {
             {items.length ? 
             items.map((item, index) => 
               <div key={item.uuid || index} className="flex items-center justify-between gap-4 rounded-xl border border-white/10 px-4 py-3 text-sm">
-                <p>{item.name || item.productName || 'Elemento'}</p><p className="text-xs text-cream/40">Cantidad: {item.quantity ?? item.qty ?? 1}</p>
-                <span className="text-cream/60">{item.price != null ? money(item.price) : ''}</span>
+                <p>{item.name || item.productName || 'Elemento'} ({money(item?.price)})</p>
+                <ul>
+                  {item?.extras.length>0 && item.extras.map((e) => {
+                    const extra = extrasData ? extrasData.find((extra)=> e.extraId === (extra.uuid || extra.id)) : e
+                    return (
+                    <span key={extra.uuid}>
+                      <span> + {extra?.name || null} </span>
+                      <span>({money(extra?.price) || null}) </span>
+                    </span>)
+                  })}
+                </ul>
+                <p className="text-xs text-cream/40">Cantidad: {item.quantity ?? item.qty ?? 1}</p>
+                <span className="text-cream/60">{item.price != null ? money(Number(item.price)*(item.quantity ?? item.qty ?? 1)) : ''}</span>
               </div>
               ) : 
             <p className="text-sm text-cream/45">No se pudo interpretar el detalle del pedido.</p>}
