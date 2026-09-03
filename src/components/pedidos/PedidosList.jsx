@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { put } from '../../api/fetchClient'
 import useGetPedidos from '../../hooks/useGetPedidos'
+import useDeletePedido from '../../hooks/useDeletePedido'
 import PedidoItem from './PedidoItem'
 import LoadingState from '../ui/LoadingState'
 import EmptyState from '../ui/EmptyState'
 import useGetExtras from "../../hooks/useGetExtras"
 
 const money = value => new Intl.NumberFormat(import.meta.env.VITE_LOCALE || 'es-US', { style: 'currency', currency: import.meta.env.VITE_CURRENCY || 'USD' }).format(Number(value || 0))
+
 
 function Details({ pedido, onClose, onMarkDone, updating }) {
   const {data: extrasData} = useGetExtras()
@@ -99,6 +101,8 @@ export default function PedidosList() {
   const [selected, setSelected] = useState(null)
   const [filter, setFilter] = useState('todos')
   const queryClient = useQueryClient()
+  
+  const deleteMutation = useDeletePedido()
 
   const stateMutation = useMutation({
     mutationFn: ({ uuid }) => put(`/pedidos/${uuid}/state`, { orderState: 'hecho' }),
@@ -109,6 +113,11 @@ export default function PedidosList() {
 
   const markDone = async pedido => {
     try { await stateMutation.mutateAsync({ uuid: pedido.uuid }); setSelected(null) } catch (error) { window.alert(error?.data?.error || 'No se pudo actualizar el pedido') }
+  }
+
+  const handleDelete = async uuid => {
+    if (!window.confirm(`¿Eliminar pedido?`)) return
+    await deleteMutation.mutateAsync(uuid)
   }
 
   if (isLoading) return <LoadingState label="Cargando pedidos..." />
@@ -130,7 +139,7 @@ export default function PedidosList() {
       {!filtered.length ? 
         <EmptyState title="No hay pedidos con este filtro" description="Prueba con otro estado." /> : 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map(pedido => <PedidoItem key={pedido.uuid} pedido={pedido} onDetails={setSelected} onMarkDone={markDone} updating={stateMutation.isPending} />)}
+          {filtered.map(pedido => <PedidoItem key={pedido.uuid} pedido={pedido} onDetails={setSelected} onMarkDone={markDone} updating={stateMutation.isPending} onDelete={handleDelete}/>)}
         </div>}
 
       {selected ? <Details pedido={selected} onClose={() => setSelected(null)} onMarkDone={markDone} updating={stateMutation.isPending} /> : null}

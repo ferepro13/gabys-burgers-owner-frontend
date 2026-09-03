@@ -1,6 +1,7 @@
+import {Button} from "../ui/Button"
 const money = value => new Intl.NumberFormat(import.meta.env.VITE_LOCALE || 'es-US', { style: 'currency', currency: import.meta.env.VITE_CURRENCY || 'USD' }).format(Number(value || 0))
 
-export default function PedidoItem({ pedido, onDetails= f => f, onMarkDone= f => f, updating = false }) {
+export default function PedidoItem({ pedido, onDetails= f => f, onMarkDone= f => f, onDelete= f=>f , updating = false, deleting = false }) {
   const parsedOrder = typeof pedido.orderDetails === 'string' ? (() => { try { return JSON.parse(pedido.orderDetails) } catch { return null } })() : pedido.orderDetails
   const items = parsedOrder?.productos || []
   //const items = [...(parsedOrder?.productos || []), ...(parsedOrder?.extras || [])]
@@ -32,6 +33,9 @@ export default function PedidoItem({ pedido, onDetails= f => f, onMarkDone= f =>
           {updating ? '...' : 'Marcar hecho'}
         </button>
          : null}
+        <Button size="sm" variant="secondary" disabled={deleting} onClick={() => onDelete(pedido.uuid)}>
+          {deleting ? "deleting..." : "Borrar"}
+        </Button>
       </div>
     </article>
   )
