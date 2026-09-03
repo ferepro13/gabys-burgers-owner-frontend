@@ -139,7 +139,7 @@ export default function PedidosList() {
       {!filtered.length ? 
         <EmptyState title="No hay pedidos con este filtro" description="Prueba con otro estado." /> : 
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map(pedido => <PedidoItem key={pedido.uuid} pedido={pedido} onDetails={setSelected} onMarkDone={markDone} updating={stateMutation.isPending} onDelete={handleDelete}/>)}
+          {filtered.map(pedido => <PedidoItem key={pedido.uuid} pedido={pedido} onDetails={setSelected} onMarkDone={markDone} updating={stateMutation.isPending} onDelete={handleDelete} deleting={deleteMutation.isPending}/>)}
         </div>}
 
       {selected ? <Details pedido={selected} onClose={() => setSelected(null)} onMarkDone={markDone} updating={stateMutation.isPending} /> : null}

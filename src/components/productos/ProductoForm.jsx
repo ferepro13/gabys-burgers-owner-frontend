@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import useCreateProducto from '../../hooks/useCreateProducto'
 import useUpdateProducto from '../../hooks/useUpdateProducto'
@@ -12,7 +12,7 @@ export default function ProductoForm({ initialData = null, onClose, onSaved }) {
   const [fileImage, setFileImage] = useState()
   const [serverError, setServerError] = useState('')
 
-  const { register, handleSubmit, reset, formState: { errors }, setValue, control } = useForm({
+  const { register, handleSubmit, reset, formState: { errors }, setValue } = useForm({
     defaultValues: {
       name: initialData?.name || '',
       category: initialData?.category || "",
@@ -21,7 +21,6 @@ export default function ProductoForm({ initialData = null, onClose, onSaved }) {
       stock: initialData?.stock ?? '',
     },
   })
-  const allValues = useWatch({control});
 
   useEffect(() => () => preview?.startsWith('blob:') && URL.revokeObjectURL(preview), [preview])
 
@@ -121,9 +120,6 @@ export default function ProductoForm({ initialData = null, onClose, onSaved }) {
               {mutation.isPending ? 'Guardando…' : initialData ? 'Guardar cambios' : 'Crear producto'}
             </button>
           </div>
-          <pre>
-            {JSON.stringify(allValues, null, 2)}
-          </pre>
         </form>
         
       </motion.div>
